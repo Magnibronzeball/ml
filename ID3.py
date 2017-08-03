@@ -74,6 +74,19 @@ def createTree(dataSet,labels):
         myTree[bestFeatLabel][value] = createTree(splitDataSet(dataSet, bestFeat, value),subLabels)
     return myTree
 
+#决策树的保存
+def storeTree( inputTree, filename):
+    import pickle
+    fw = open(filename,'wb')
+    pickle.dump(inputTree, fw)
+    fw.close()
+
+#决策树的倒入
+def grabTree( filename):
+    import pickle
+    fr = open(filename,'rb')
+    return pickle.load(fr)
+
 #创建数据集
 def createDataSetFromTXT(filename):
     dataSet = []; labels = []
@@ -93,6 +106,20 @@ def createDataSetFromTXT(filename):
 
         linenumber = linenumber+1
     return dataSet,labels
+
+# 分类函数
+def classify( inputTree, featLabels, testVec):
+    firstStr = list(inputTree.keys())[0]
+    classLabel=""
+    secondDict = inputTree[firstStr]
+    featIndex = featLabels.index( firstStr)
+    for key in secondDict.keys():
+        if testVec[ featIndex] == key:
+            if type(secondDict[key]).__name__=='dict':
+                classLabel = classify( secondDict[ key], featLabels, testVec)
+            else:
+                classLabel = secondDict[key]
+    return classLabel
 
 #计算香农熵
 print(calcShannonEnt([[1,1,'yes'], [1,1,'yes'],[1,0,'no'],[0,1,'no'],[0,1,'no']]))
