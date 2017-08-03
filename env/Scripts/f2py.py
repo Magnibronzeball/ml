@@ -1,4 +1,4 @@
-#!C:\pyprojects\ml\env\Scripts\python.exe
+#!c:\pyprojects\ml\env\scripts\python.exe
 # See http://cens.ioc.ee/projects/f2py2e/
 from __future__ import division, print_function
 
