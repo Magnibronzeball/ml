@@ -7,6 +7,7 @@ def createDataSet():
     print(labels)
     return group, labels
 
+#分类
 def classify0( inX, dataSet, labels, k):
     dataSetSize = dataSet.shape[0]
     diffMat = tile(inX,(dataSetSize,1)) - dataSet
@@ -22,4 +23,22 @@ def classify0( inX, dataSet, labels, k):
     cc=sortedClassCount[0][0]
     return sortedClassCount[0][0]
 
-print(classify0([100,1000],array([[ 1.0, 1.1],[ 1.0, 1.0],[ 0, 0],[ 0, 0.1]]),['A',' A',' B',' B'],3))
+#从文件得到矩阵
+def file2matrix( filename):
+    fr = open( filename)
+    arrayOlines= fr.readlines()
+    numberOfLines = len( arrayOlines)
+    returnMat = zeros(( numberOfLines, 3))
+    classLabelVector = []
+    index = 0
+    for line in arrayOlines:
+        line = line. strip()
+        listFromLine = line.split('\t')
+        returnMat[ index,:] = listFromLine[ 0: 3]
+        classLabelVector. append( int( listFromLine[- 1]))
+        index += 1
+    return returnMat, classLabelVector
+
+
+
+#print(classify0([100,1000],array([[ 1.0, 1.1],[ 1.0, 1.0],[ 0, 0],[ 0, 0.1]]),['A',' A',' B',' B'],3))
