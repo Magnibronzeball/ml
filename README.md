@@ -10,3 +10,5 @@ treePlotter.py 基于matplotlib的决策树展示<br>
 运行testID3.py从dataset.txt中读取训练数据，生成决策树，并保存到tree.txt中<br>
 运行testID31.py查看labels=['T1','T5']，testVec=['0.75','0.25']分类结果<br>
 ![Alt text](Figure_1.png "决策树")
+## 朴素贝叶斯
+bayes.py <br>
