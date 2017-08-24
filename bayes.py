@@ -1,3 +1,4 @@
+from numpy import *
 #训练数据
 def loadDataSet():
     postingList=[[' my', 'dog', 'has', 'flea', 'problems', 'help', 'please'],
@@ -16,6 +17,7 @@ def createVocabList( dataSet):
         vocabSet = vocabSet | set( document)
     return list( vocabSet)
 
+#inputSet中的每一个元素，如果出现在vocablist中，则标注vocablist中对应的元素的位置为1
 def setOfWords2Vec( vocabList, inputSet):
     returnVec = [0]* len( vocabList)
     for word in inputSet:
@@ -25,10 +27,45 @@ def setOfWords2Vec( vocabList, inputSet):
             print("the word: %s is not in my Vocabulary!" % word)
     return returnVec
 
+#训练函数
+def trainNB0( trainMatrix, trainCategory):
+    numTrainDocs = len( trainMatrix)
+    numWords = len( trainMatrix[ 0])
+    pAbusive = sum( trainCategory)/ float( numTrainDocs)
+    p0Num = zeros( numWords);p1Num = zeros( numWords)
+    p0Denom = 0.0;p1Denom = 0.0
+    for i in range( numTrainDocs):
+        if trainCategory[ i] == 1:
+            p1Num += trainMatrix[ i]
+            p1Denom += sum( trainMatrix[ i])
+        else:
+            p0Num += trainMatrix[ i]
+            p0Denom += sum( trainMatrix[ i])
+    p1Vect = p1Num/p1Denom
+    p0Vect = p0Num/p0Denom
+    return p0Vect, p1Vect, pAbusive
 
-listOPosts, listClasses = loadDataSet()
-myVocabList=createVocabList( listOPosts)
-print(myVocabList)
-print( listOPosts[ 0])
-print(setOfWords2Vec( myVocabList, listOPosts[ 0]))
-print(setOfWords2Vec( myVocabList, listOPosts[ 3]))
+
+def classifyNB( vec2Classify, p0Vec, p1Vec, pClass1):
+    p1 = sum( vec2Classify * p1Vec) + log( pClass1)
+    p0 = sum( vec2Classify * p0Vec) + log( 1.0 - pClass1)
+    if p1 > p0:
+        return 1
+    else:
+        return 0
+
+def testingNB():
+    listOPosts, listClasses = loadDataSet()
+    myVocabList = createVocabList( listOPosts)
+    trainMat=[]
+    for postinDoc in listOPosts:
+        trainMat. append( setOfWords2Vec( myVocabList, postinDoc))
+    p0V, p1V, pAb = trainNB0( array( trainMat), array( listClasses))
+    testEntry = ['love', 'my', 'dalmation']
+    thisDoc = array( setOfWords2Vec( myVocabList, testEntry))
+    print(testEntry,' classified as: ',classifyNB( thisDoc, p0V, p1V, pAb))
+    testEntry = ['stupid', 'garbage']
+    thisDoc = array( setOfWords2Vec( myVocabList, testEntry))
+    print(testEntry,' classified as: ',classifyNB( thisDoc, p0V, p1V, pAb))
+
+testingNB();
